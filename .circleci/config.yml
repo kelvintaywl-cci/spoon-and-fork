@@ -1,39 +1,15 @@
 version: 2.1
 
-executors:
-  basic:
-    docker:
-      - image: cimg/base:stable
-    resource_class: small
-
-commands:
-  my-checkout:
-    steps:
-      - restore_cache:
-          keys:
-            - source-v1-{{ .Branch }}
-            - source-v1-
-      - checkout
-      - save_cache:
-          key: source-v1-{{ .Branch }}
-          paths:
-            - ".git"
-
 jobs:
-  checkout-org-context:
-    executor: basic
+  terraform-validate:
+    resource_class: small
+    docker:
+      - image: hashicorp/terraform:latest
     steps:
-      - checkout
       - run: |
-          # check out the org context!
-          # should print 'spoon'
-          printenv FORK
-  custom-checkout:
-    executor: basic
-    steps:
-      - my-checkout
+          echo "foo"
 
 workflows:
   main:
     jobs:
-      - custom-checkout
+      - terraform-validate
